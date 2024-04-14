@@ -21,6 +21,7 @@
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/Joy.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Int32.h>
 #include <std_msgs/Int32MultiArray.h>
@@ -73,6 +74,7 @@ struct PlannerParameters
   std::string sub_coverage_boundary_topic_;
   std::string sub_viewpoint_boundary_topic_;
   std::string sub_nogo_boundary_topic_;
+  std::string sub_joystick_topic_;
 
   std::string pub_exploration_finish_topic_;
   std::string pub_runtime_breakdown_topic_;
@@ -102,6 +104,7 @@ struct PlannerParameters
   // Int
   int kDirectionChangeCounterThr;
   int kDirectionNoChangeCounterThr;
+  int kResetWaypointJoystickButton;
 
   bool ReadParameters(ros::NodeHandle& nh);
 };
@@ -179,6 +182,7 @@ private:
   bool step_;
   bool use_momentum_;
   bool lookahead_point_in_line_of_sight_;
+  bool reset_waypoint_;
   PlannerParameters pp_;
   PlannerData pd_;
   pointcloud_utils_ns::PointCloudDownsizer<pcl::PointXYZ> pointcloud_downsizer_;
@@ -209,6 +213,7 @@ private:
   ros::Subscriber coverage_boundary_sub_;
   ros::Subscriber viewpoint_boundary_sub_;
   ros::Subscriber nogo_boundary_sub_;
+  ros::Subscriber joystick_sub_;
 
   // ROS publishers
   ros::Publisher global_path_full_publisher_;
@@ -234,6 +239,7 @@ private:
   void CoverageBoundaryCallback(const geometry_msgs::PolygonStampedConstPtr& polygon_msg);
   void ViewPointBoundaryCallback(const geometry_msgs::PolygonStampedConstPtr& polygon_msg);
   void NogoBoundaryCallback(const geometry_msgs::PolygonStampedConstPtr& polygon_msg);
+  void JoystickCallback(const sensor_msgs::Joy::ConstPtr& joy_msg);
 
   void SendInitialWaypoint();
   void UpdateKeyposeGraph();

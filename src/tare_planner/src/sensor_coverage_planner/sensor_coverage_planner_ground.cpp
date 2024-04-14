@@ -30,6 +30,7 @@ bool PlannerParameters::ReadParameters(ros::NodeHandle& nh)
   sub_viewpoint_boundary_topic_ =
       misc_utils_ns::getParam<std::string>(nh, "sub_viewpoint_boundary_topic_", "/navigation_boundary");
   sub_nogo_boundary_topic_ = misc_utils_ns::getParam<std::string>(nh, "sub_nogo_boundary_topic_", "/nogo_boundary");
+  sub_joystick_topic_ = misc_utils_ns::getParam<std::string>(nh, "sub_joystick_topic_", "/joy");
   pub_exploration_finish_topic_ =
       misc_utils_ns::getParam<std::string>(nh, "pub_exploration_finish_topic_", "exploration_finish");
   pub_runtime_breakdown_topic_ =
@@ -61,6 +62,7 @@ bool PlannerParameters::ReadParameters(ros::NodeHandle& nh)
   // Int
   kDirectionChangeCounterThr = misc_utils_ns::getParam<int>(nh, "kDirectionChangeCounterThr", 4);
   kDirectionNoChangeCounterThr = misc_utils_ns::getParam<int>(nh, "kDirectionNoChangeCounterThr", 5);
+  kResetWaypointJoystickButton = misc_utils_ns::getParam<int>(nh, "kResetWaypointJoystickButton", 0);
 
   return true;
 }
@@ -168,6 +170,7 @@ SensorCoveragePlanner3D::SensorCoveragePlanner3D(ros::NodeHandle& nh, ros::NodeH
   , step_(false)
   , use_momentum_(false)
   , lookahead_point_in_line_of_sight_(true)
+  , reset_waypoint_(false)
   , registered_cloud_count_(0)
   , keypose_count_(0)
   , direction_change_count_(0)
@@ -209,6 +212,8 @@ bool SensorCoveragePlanner3D::initialize(ros::NodeHandle& nh, ros::NodeHandle& n
       nh.subscribe(pp_.sub_viewpoint_boundary_topic_, 1, &SensorCoveragePlanner3D::ViewPointBoundaryCallback, this);
   nogo_boundary_sub_ =
       nh.subscribe(pp_.sub_nogo_boundary_topic_, 1, &SensorCoveragePlanner3D::NogoBoundaryCallback, this);
+  joystick_sub_ =
+      nh.subscribe(pp_.sub_joystick_topic_, 1, &SensorCoveragePlanner3D::JoystickCallback, this);
 
   global_path_full_publisher_ = nh.advertise<nav_msgs::Path>("global_path_full", 1);
   global_path_publisher_ = nh.advertise<nav_msgs::Path>("global_path", 1);
@@ -402,6 +407,16 @@ void SensorCoveragePlanner3D::NogoBoundaryCallback(const geometry_msgs::PolygonS
     pd_.nogo_boundary_marker_->marker_.points.push_back(point);
   }
   pd_.nogo_boundary_marker_->Publish();
+}
+
+void SensorCoveragePlanner3D::JoystickCallback(const sensor_msgs::Joy::ConstPtr& joy_msg){
+  if(pp_.kResetWaypointJoystickButton >= 0 && pp_.kResetWaypointJoystickButton < joy_msg->buttons.size()){
+    if (joy_msg->buttons[pp_.kResetWaypointJoystickButton] == 1){
+      reset_waypoint_ = true;
+      std::cout << "reset waypoint" << std::endl;
+    }
+  }
+  
 }
 
 void SensorCoveragePlanner3D::SendInitialWaypoint()
@@ -840,6 +855,10 @@ bool SensorCoveragePlanner3D::GetLookAheadPoint(const exploration_path_ns::Explo
     }
   }
 
+  if(reset_waypoint_){
+    has_lookahead = false;   
+  }
+
   int forward_viewpoint_count = 0;
   int backward_viewpoint_count = 0;
 
@@ -955,24 +974,15 @@ bool SensorCoveragePlanner3D::GetLookAheadPoint(const exploration_path_ns::Explo
   double dx = pd_.lookahead_point_direction_.x();
   double dy = pd_.lookahead_point_direction_.y();
 
-  // double lx = 1.0;
-  // double ly = 0.0;
-  // double dx = 1.0;
-  // double dy = 0.0;
-  // if (pd_.moving_forward_)
-  // {
-  //   lx = 1.0;
-  // }
-  // else
-  // {
-  //   lx = -1.0;
-  // }
+  if(reset_waypoint_){
+    reset_waypoint_ = false;
+    double lx = 1.0;
+    double ly = 0.0;
 
-  // dx = cos(pd_.robot_yaw_) * lx - sin(pd_.robot_yaw_) * ly;
-  // dy = sin(pd_.robot_yaw_) * lx + cos(pd_.robot_yaw_) * ly;
-
-  // double dx = pd_.moving_direction_.x();
-  // double dy = pd_.moving_direction_.y();
+    dx = cos(pd_.robot_yaw_) * lx - sin(pd_.robot_yaw_) * ly;
+    dy = sin(pd_.robot_yaw_) * lx + cos(pd_.robot_yaw_) * ly;
+  }
+  
 
   double forward_angle_score = -2;
   double backward_angle_score = -2;
