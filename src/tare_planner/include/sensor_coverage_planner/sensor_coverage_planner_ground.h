@@ -26,6 +26,7 @@
 #include <std_msgs/Int32.h>
 #include <std_msgs/Int32MultiArray.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Empty.h>
 #include <geometry_msgs/PolygonStamped.h>
 #include <geometry_msgs/Pose.h>
 // PCL
@@ -75,6 +76,7 @@ struct PlannerParameters
   std::string sub_viewpoint_boundary_topic_;
   std::string sub_nogo_boundary_topic_;
   std::string sub_joystick_topic_;
+  std::string sub_reset_waypoint_topic_;
 
   std::string pub_exploration_finish_topic_;
   std::string pub_runtime_breakdown_topic_;
@@ -214,6 +216,7 @@ private:
   ros::Subscriber viewpoint_boundary_sub_;
   ros::Subscriber nogo_boundary_sub_;
   ros::Subscriber joystick_sub_;
+  ros::Subscriber reset_waypoint_sub_;
 
   // ROS publishers
   ros::Publisher global_path_full_publisher_;
@@ -240,6 +243,7 @@ private:
   void ViewPointBoundaryCallback(const geometry_msgs::PolygonStampedConstPtr& polygon_msg);
   void NogoBoundaryCallback(const geometry_msgs::PolygonStampedConstPtr& polygon_msg);
   void JoystickCallback(const sensor_msgs::Joy::ConstPtr& joy_msg);
+  void ResetWaypointCallback(const std_msgs::Empty::ConstPtr& empty_msg);
 
   void SendInitialWaypoint();
   void UpdateKeyposeGraph();

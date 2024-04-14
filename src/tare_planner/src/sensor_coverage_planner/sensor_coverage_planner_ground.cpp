@@ -31,6 +31,7 @@ bool PlannerParameters::ReadParameters(ros::NodeHandle& nh)
       misc_utils_ns::getParam<std::string>(nh, "sub_viewpoint_boundary_topic_", "/navigation_boundary");
   sub_nogo_boundary_topic_ = misc_utils_ns::getParam<std::string>(nh, "sub_nogo_boundary_topic_", "/nogo_boundary");
   sub_joystick_topic_ = misc_utils_ns::getParam<std::string>(nh, "sub_joystick_topic_", "/joy");
+  sub_reset_waypoint_topic_ = misc_utils_ns::getParam<std::string>(nh, "sub_reset_waypoint_topic_", "/reset_waypoint");
   pub_exploration_finish_topic_ =
       misc_utils_ns::getParam<std::string>(nh, "pub_exploration_finish_topic_", "exploration_finish");
   pub_runtime_breakdown_topic_ =
@@ -214,6 +215,8 @@ bool SensorCoveragePlanner3D::initialize(ros::NodeHandle& nh, ros::NodeHandle& n
       nh.subscribe(pp_.sub_nogo_boundary_topic_, 1, &SensorCoveragePlanner3D::NogoBoundaryCallback, this);
   joystick_sub_ =
       nh.subscribe(pp_.sub_joystick_topic_, 1, &SensorCoveragePlanner3D::JoystickCallback, this);
+  reset_waypoint_sub_ =
+      nh.subscribe(pp_.sub_reset_waypoint_topic_, 1, &SensorCoveragePlanner3D::ResetWaypointCallback, this);
 
   global_path_full_publisher_ = nh.advertise<nav_msgs::Path>("global_path_full", 1);
   global_path_publisher_ = nh.advertise<nav_msgs::Path>("global_path", 1);
@@ -417,6 +420,11 @@ void SensorCoveragePlanner3D::JoystickCallback(const sensor_msgs::Joy::ConstPtr&
     }
   }
   
+}
+
+void SensorCoveragePlanner3D::ResetWaypointCallback(const std_msgs::Empty::ConstPtr& empty_msg){
+  reset_waypoint_ = true;
+  std::cout << "reset waypoint" << std::endl;
 }
 
 void SensorCoveragePlanner3D::SendInitialWaypoint()
