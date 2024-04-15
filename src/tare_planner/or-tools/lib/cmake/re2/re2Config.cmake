@@ -37,6 +37,12 @@ if(UNIX)
   find_dependency(Threads REQUIRED)
 endif()
 
+find_dependency(absl REQUIRED)
+
+if(OFF)
+  find_dependency(ICU REQUIRED COMPONENTS uc)
+endif()
+
 check_required_components(re2)
 
 if(TARGET re2::re2)

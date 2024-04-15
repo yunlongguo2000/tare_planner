@@ -3,7 +3,7 @@
 /*                  This file is part of the program and library             */
 /*         SCIP --- Solving Constraint Integer Programs                      */
 /*                                                                           */
-/*  Copyright 2002-2022 Zuse Institute Berlin                                */
+/*  Copyright (c) 2002-2023 Zuse Institute Berlin (ZIB)                      */
 /*                                                                           */
 /*  Licensed under the Apache License, Version 2.0 (the "License");          */
 /*  you may not use this file except in compliance with the License.         */
@@ -144,10 +144,10 @@ extern "C" {
 #endif
 
 
-#define SCIP_VERSION                803 /**< SCIP version number (multiplied by 100 to get integer number) */
+#define SCIP_VERSION                804 /**< SCIP version number (multiplied by 100 to get integer number) */
 #define SCIP_SUBVERSION               0 /**< SCIP sub version number */
 #define SCIP_APIVERSION             104 /**< SCIP API version number */
-#define SCIP_COPYRIGHT   "Copyright (C) 2002-2022 Konrad-Zuse-Zentrum fuer Informationstechnik Berlin (ZIB)"
+#define SCIP_COPYRIGHT   "Copyright (c) 2002-2023 Zuse Institute Berlin (ZIB)"
 
 
 /*
@@ -300,6 +300,7 @@ extern "C" {
  */
 
 #define SCIP_MAXSTRLEN             1024 /**< maximum string length in SCIP */
+#define SCIP_SPACECONTROL      " tnvfr" /**< control specifier for escaped spaces */
 
 /*
  * Memory settings

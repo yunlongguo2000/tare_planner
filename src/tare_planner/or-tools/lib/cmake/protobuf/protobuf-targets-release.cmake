@@ -38,11 +38,11 @@ list(APPEND _cmake_import_check_files_for_protobuf::libprotoc "${_IMPORT_PREFIX}
 # Import target "protobuf::protoc" for configuration "Release"
 set_property(TARGET protobuf::protoc APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(protobuf::protoc PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/bin/protoc-3.21.12.0"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/bin/protoc-25.0.0"
   )
 
 list(APPEND _cmake_import_check_targets protobuf::protoc )
-list(APPEND _cmake_import_check_files_for_protobuf::protoc "${_IMPORT_PREFIX}/bin/protoc-3.21.12.0" )
+list(APPEND _cmake_import_check_files_for_protobuf::protoc "${_IMPORT_PREFIX}/bin/protoc-25.0.0" )
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)

@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...3.23)
+cmake_policy(VERSION 2.8.3...3.24)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -59,24 +59,27 @@ endif()
 add_library(protobuf::libprotobuf-lite STATIC IMPORTED)
 
 set_target_properties(protobuf::libprotobuf-lite PROPERTIES
+  INTERFACE_COMPILE_FEATURES "cxx_std_14"
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:-lpthread>"
+  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:-lpthread>;absl::absl_check;absl::absl_log;absl::algorithm;absl::base;absl::bind_front;absl::bits;absl::btree;absl::cleanup;absl::cord;absl::core_headers;absl::debugging;absl::die_if_null;absl::dynamic_annotations;absl::flags;absl::flat_hash_map;absl::flat_hash_set;absl::function_ref;absl::hash;absl::layout;absl::log_initialize;absl::log_severity;absl::memory;absl::node_hash_map;absl::node_hash_set;absl::optional;absl::span;absl::status;absl::statusor;absl::strings;absl::synchronization;absl::time;absl::type_traits;absl::utility;absl::variant;\$<LINK_ONLY:utf8_range::utf8_validity>"
 )
 
 # Create imported target protobuf::libprotobuf
 add_library(protobuf::libprotobuf STATIC IMPORTED)
 
 set_target_properties(protobuf::libprotobuf PROPERTIES
+  INTERFACE_COMPILE_FEATURES "cxx_std_14"
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:-lpthread>;\$<LINK_ONLY:ZLIB::ZLIB>"
+  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:-lpthread>;\$<LINK_ONLY:ZLIB::ZLIB>;absl::absl_check;absl::absl_log;absl::algorithm;absl::base;absl::bind_front;absl::bits;absl::btree;absl::cleanup;absl::cord;absl::core_headers;absl::debugging;absl::die_if_null;absl::dynamic_annotations;absl::flags;absl::flat_hash_map;absl::flat_hash_set;absl::function_ref;absl::hash;absl::layout;absl::log_initialize;absl::log_severity;absl::memory;absl::node_hash_map;absl::node_hash_set;absl::optional;absl::span;absl::status;absl::statusor;absl::strings;absl::synchronization;absl::time;absl::type_traits;absl::utility;absl::variant;\$<LINK_ONLY:utf8_range::utf8_validity>"
 )
 
 # Create imported target protobuf::libprotoc
 add_library(protobuf::libprotoc STATIC IMPORTED)
 
 set_target_properties(protobuf::libprotoc PROPERTIES
+  INTERFACE_COMPILE_FEATURES "cxx_std_14"
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:protobuf::libprotobuf>"
+  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:protobuf::libprotobuf>;absl::absl_check;absl::absl_log;absl::algorithm;absl::base;absl::bind_front;absl::bits;absl::btree;absl::cleanup;absl::cord;absl::core_headers;absl::debugging;absl::die_if_null;absl::dynamic_annotations;absl::flags;absl::flat_hash_map;absl::flat_hash_set;absl::function_ref;absl::hash;absl::layout;absl::log_initialize;absl::log_severity;absl::memory;absl::node_hash_map;absl::node_hash_set;absl::optional;absl::span;absl::status;absl::statusor;absl::strings;absl::synchronization;absl::time;absl::type_traits;absl::utility;absl::variant"
 )
 
 # Create imported target protobuf::protoc
@@ -121,7 +124,7 @@ unset(_cmake_import_check_targets)
 # Make sure the targets which have been exported in some other
 # export set exist.
 unset(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets)
-foreach(_target "ZLIB::ZLIB" )
+foreach(_target "absl::absl_check" "absl::absl_log" "absl::algorithm" "absl::base" "absl::bind_front" "absl::bits" "absl::btree" "absl::cleanup" "absl::cord" "absl::core_headers" "absl::debugging" "absl::die_if_null" "absl::dynamic_annotations" "absl::flags" "absl::flat_hash_map" "absl::flat_hash_set" "absl::function_ref" "absl::hash" "absl::layout" "absl::log_initialize" "absl::log_severity" "absl::memory" "absl::node_hash_map" "absl::node_hash_set" "absl::optional" "absl::span" "absl::status" "absl::statusor" "absl::strings" "absl::synchronization" "absl::time" "absl::type_traits" "absl::utility" "absl::variant" "utf8_range::utf8_validity" "ZLIB::ZLIB" )
   if(NOT TARGET "${_target}" )
     set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets "${${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets} ${_target}")
   endif()

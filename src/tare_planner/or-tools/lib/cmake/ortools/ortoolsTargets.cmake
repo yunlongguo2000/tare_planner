@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...3.23)
+cmake_policy(VERSION 2.8.3...3.24)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -19,7 +19,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_cmake_targets_defined "")
 set(_cmake_targets_not_defined "")
 set(_cmake_expected_targets "")
-foreach(_cmake_expected_target IN ITEMS ortools::ortools ortools::flatzinc ortools::fzn)
+foreach(_cmake_expected_target IN ITEMS ortools::ortools_math_opt_constraints ortools::ortools_math_opt ortools::ortools ortools::flatzinc ortools::fzn)
   list(APPEND _cmake_expected_targets "${_cmake_expected_target}")
   if(TARGET "${_cmake_expected_target}")
     list(APPEND _cmake_targets_defined "${_cmake_expected_target}")
@@ -55,16 +55,31 @@ if(_IMPORT_PREFIX STREQUAL "/")
   set(_IMPORT_PREFIX "")
 endif()
 
+# Create imported target ortools::ortools_math_opt_constraints
+add_library(ortools::ortools_math_opt_constraints INTERFACE IMPORTED)
+
+set_target_properties(ortools::ortools_math_opt_constraints PROPERTIES
+  INTERFACE_SOURCES "\$<TARGET_OBJECTS:ortools_math_opt_constraints_indicator>;\$<TARGET_OBJECTS:ortools_math_opt_constraints_quadratic>;\$<TARGET_OBJECTS:ortools_math_opt_constraints_second_order_cone>;\$<TARGET_OBJECTS:ortools_math_opt_constraints_sos>;\$<TARGET_OBJECTS:ortools_math_opt_constraints_util>"
+)
+
+# Create imported target ortools::ortools_math_opt
+add_library(ortools::ortools_math_opt INTERFACE IMPORTED)
+
+set_target_properties(ortools::ortools_math_opt PROPERTIES
+  INTERFACE_LINK_LIBRARIES "ortools::ortools_math_opt_constraints"
+  INTERFACE_SOURCES "\$<TARGET_OBJECTS:ortools_math_opt_core>;\$<TARGET_OBJECTS:ortools_math_opt_cpp>;\$<TARGET_OBJECTS:ortools_math_opt_io>;\$<TARGET_OBJECTS:ortools_math_opt_labs>;\$<TARGET_OBJECTS:ortools_math_opt_solvers>;\$<TARGET_OBJECTS:ortools_math_opt_storage>;\$<TARGET_OBJECTS:ortools_math_opt_validators>"
+)
+
 # Create imported target ortools::ortools
 add_library(ortools::ortools SHARED IMPORTED)
 
 set_target_properties(ortools::ortools PROPERTIES
   COMPATIBLE_INTERFACE_STRING "ortools_MAJOR_VERSION"
-  INTERFACE_COMPILE_DEFINITIONS "OR_TOOLS_AS_DYNAMIC_LIB;USE_BOP;USE_GLOP;USE_LP_PARSER;USE_CBC;USE_CLP;USE_PDLP;USE_SCIP"
+  INTERFACE_COMPILE_DEFINITIONS "OR_TOOLS_AS_DYNAMIC_LIB;USE_BOP;USE_GLOP;USE_LP_PARSER;USE_MATH_OPT;USE_CBC;USE_CLP;USE_PDLP;USE_SCIP"
   INTERFACE_COMPILE_FEATURES "\$<IF:\$<CXX_COMPILER_ID:MSVC>,cxx_std_20,cxx_std_17>"
   INTERFACE_COMPILE_OPTIONS "-fwrapv"
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include;${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "dl;ZLIB::ZLIB;absl::base;absl::core_headers;absl::absl_check;absl::absl_log;absl::check;absl::die_if_null;absl::flags;absl::flags_commandlineflag;absl::flags_marshalling;absl::flags_parse;absl::flags_usage;absl::log;absl::log_flags;absl::log_globals;absl::log_initialize;absl::log_internal_message;absl::cord;absl::random_random;absl::raw_hash_set;absl::hash;absl::leak_check;absl::memory;absl::meta;absl::stacktrace;absl::status;absl::statusor;absl::str_format;absl::strings;absl::synchronization;absl::time;absl::any;protobuf::libprotobuf;re2::re2;Coin::CbcSolver;Coin::OsiCbc;Coin::ClpSolver;Coin::OsiClp;\$<\$<BOOL:OFF>:CPLEX::CPLEX>;\$<\$<BOOL:OFF>:GLPK::GLPK>;\$<\$<BOOL:OFF>:HIGHS::HIGHS>;Eigen3::Eigen;\$<\$<BOOL:ON>:libscip>;\$<\$<BOOL:OFF>:XPRESS::XPRESS>;Threads::Threads"
+  INTERFACE_LINK_LIBRARIES "dl;ZLIB::ZLIB;absl::base;absl::core_headers;absl::absl_check;absl::absl_log;absl::check;absl::die_if_null;absl::flags;absl::flags_commandlineflag;absl::flags_marshalling;absl::flags_parse;absl::flags_reflection;absl::flags_usage;absl::log;absl::log_flags;absl::log_globals;absl::log_initialize;absl::log_internal_message;absl::cord;absl::random_random;absl::raw_hash_set;absl::hash;absl::leak_check;absl::memory;absl::meta;absl::stacktrace;absl::status;absl::statusor;absl::str_format;absl::strings;absl::synchronization;absl::time;absl::any;protobuf::libprotobuf;re2::re2;Coin::CbcSolver;Coin::OsiCbc;Coin::ClpSolver;Coin::OsiClp;\$<\$<BOOL:OFF>:CPLEX::CPLEX>;\$<\$<BOOL:OFF>:GLPK::GLPK>;\$<\$<BOOL:OFF>:HIGHS::HIGHS>;Eigen3::Eigen;\$<\$<BOOL:ON>:libscip>;\$<\$<BOOL:OFF>:XPRESS::XPRESS>;Threads::Threads"
   INTERFACE_POSITION_INDEPENDENT_CODE "ON"
   INTERFACE_ortools_MAJOR_VERSION "9"
 )
@@ -91,8 +106,8 @@ set_target_properties(ortools::fzn PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
 )
 
-if(CMAKE_VERSION VERSION_LESS 2.8.12)
-  message(FATAL_ERROR "This file relies on consumers using CMake 2.8.12 or greater.")
+if(CMAKE_VERSION VERSION_LESS 3.1.0)
+  message(FATAL_ERROR "This file relies on consumers using CMake 3.1.0 or greater.")
 endif()
 
 # Load information for each installed configuration.
@@ -130,7 +145,7 @@ unset(_cmake_import_check_targets)
 # Make sure the targets which have been exported in some other
 # export set exist.
 unset(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets)
-foreach(_target "ZLIB::ZLIB" "absl::base" "absl::core_headers" "absl::absl_check" "absl::absl_log" "absl::check" "absl::die_if_null" "absl::flags" "absl::flags_commandlineflag" "absl::flags_marshalling" "absl::flags_parse" "absl::flags_usage" "absl::log" "absl::log_flags" "absl::log_globals" "absl::log_initialize" "absl::log_internal_message" "absl::cord" "absl::random_random" "absl::raw_hash_set" "absl::hash" "absl::leak_check" "absl::memory" "absl::meta" "absl::stacktrace" "absl::status" "absl::statusor" "absl::str_format" "absl::strings" "absl::synchronization" "absl::time" "absl::any" "protobuf::libprotobuf" "re2::re2" "Coin::CbcSolver" "Coin::OsiCbc" "Coin::ClpSolver" "Coin::OsiClp" "Eigen3::Eigen" )
+foreach(_target "ZLIB::ZLIB" "absl::base" "absl::core_headers" "absl::absl_check" "absl::absl_log" "absl::check" "absl::die_if_null" "absl::flags" "absl::flags_commandlineflag" "absl::flags_marshalling" "absl::flags_parse" "absl::flags_reflection" "absl::flags_usage" "absl::log" "absl::log_flags" "absl::log_globals" "absl::log_initialize" "absl::log_internal_message" "absl::cord" "absl::random_random" "absl::raw_hash_set" "absl::hash" "absl::leak_check" "absl::memory" "absl::meta" "absl::stacktrace" "absl::status" "absl::statusor" "absl::str_format" "absl::strings" "absl::synchronization" "absl::time" "absl::any" "protobuf::libprotobuf" "re2::re2" "Coin::CbcSolver" "Coin::OsiCbc" "Coin::ClpSolver" "Coin::OsiClp" "Eigen3::Eigen" )
   if(NOT TARGET "${_target}" )
     set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets "${${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets} ${_target}")
   endif()

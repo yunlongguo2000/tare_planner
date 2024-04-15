@@ -665,6 +665,16 @@ set_target_properties(absl::statusor PROPERTIES
 list(APPEND _cmake_import_check_targets absl::statusor )
 list(APPEND _cmake_import_check_files_for_absl::statusor "${_IMPORT_PREFIX}/lib/libabsl_statusor.a" )
 
+# Import target "absl::string_view" for configuration "Release"
+set_property(TARGET absl::string_view APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(absl::string_view PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libabsl_string_view.a"
+  )
+
+list(APPEND _cmake_import_check_targets absl::string_view )
+list(APPEND _cmake_import_check_files_for_absl::string_view "${_IMPORT_PREFIX}/lib/libabsl_string_view.a" )
+
 # Import target "absl::strings" for configuration "Release"
 set_property(TARGET absl::strings APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(absl::strings PROPERTIES
@@ -764,6 +774,16 @@ set_target_properties(absl::graphcycles_internal PROPERTIES
 
 list(APPEND _cmake_import_check_targets absl::graphcycles_internal )
 list(APPEND _cmake_import_check_files_for_absl::graphcycles_internal "${_IMPORT_PREFIX}/lib/libabsl_graphcycles_internal.a" )
+
+# Import target "absl::kernel_timeout_internal" for configuration "Release"
+set_property(TARGET absl::kernel_timeout_internal APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(absl::kernel_timeout_internal PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libabsl_kernel_timeout_internal.a"
+  )
+
+list(APPEND _cmake_import_check_targets absl::kernel_timeout_internal )
+list(APPEND _cmake_import_check_files_for_absl::kernel_timeout_internal "${_IMPORT_PREFIX}/lib/libabsl_kernel_timeout_internal.a" )
 
 # Import target "absl::synchronization" for configuration "Release"
 set_property(TARGET absl::synchronization APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
