@@ -17,10 +17,11 @@ To setup TARE Planner, clone the repository.
 ```
 git clone https://github.com/caochao39/tare_planner.git
 ```
-In a terminal, go to the folder and compile.
+In a terminal, go to the folder, checkout the 'melodic-noetic' branch, and compile.
 
 ```
 cd tare_planner
+git checkout melodic-noetic
 catkin_make
 ```
 To run the code, go to the development environment folder in a terminal, source the ROS workspace, and launch.
