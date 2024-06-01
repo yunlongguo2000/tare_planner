@@ -106,7 +106,7 @@ struct PlannerParameters
   // Int
   int kDirectionChangeCounterThr;
   int kDirectionNoChangeCounterThr;
-  int kResetWaypointJoystickButton;
+  int kResetWaypointJoystickAxesID;
 
   bool ReadParameters(ros::NodeHandle& nh);
 };
@@ -200,6 +200,8 @@ private:
   int direction_change_count_;
   int direction_no_change_count_;
   int momentum_activation_count_;
+
+  double reset_waypoint_joystick_axis_value_;
 
   ros::Time start_time_;
   ros::Time global_direction_switch_time_;

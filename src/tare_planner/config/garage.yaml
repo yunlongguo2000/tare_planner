@@ -32,7 +32,7 @@ kLookAheadDistance : 8
 kUseMomentum : false 
 kDirectionChangeCounterThr : 6
 kDirectionNoChangeCounterThr : 5
-kResetWaypointJoystickButton : 0
+kResetWaypointJoystickAxesID : 2
 
 
 # PlanningEnv

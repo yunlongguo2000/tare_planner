@@ -63,7 +63,7 @@ bool PlannerParameters::ReadParameters(ros::NodeHandle& nh)
   // Int
   kDirectionChangeCounterThr = misc_utils_ns::getParam<int>(nh, "kDirectionChangeCounterThr", 4);
   kDirectionNoChangeCounterThr = misc_utils_ns::getParam<int>(nh, "kDirectionNoChangeCounterThr", 5);
-  kResetWaypointJoystickButton = misc_utils_ns::getParam<int>(nh, "kResetWaypointJoystickButton", 0);
+  kResetWaypointJoystickAxesID = misc_utils_ns::getParam<int>(nh, "kResetWaypointJoystickAxesID", 0);
 
   return true;
 }
@@ -177,6 +177,7 @@ SensorCoveragePlanner3D::SensorCoveragePlanner3D(ros::NodeHandle& nh, ros::NodeH
   , direction_change_count_(0)
   , direction_no_change_count_(0)
   , momentum_activation_count_(0)
+  , reset_waypoint_joystick_axis_value_(-1.0)
 {
   initialize(nh, nh_p);
   PrintExplorationStatus("Exploration Started", false);
@@ -413,17 +414,34 @@ void SensorCoveragePlanner3D::NogoBoundaryCallback(const geometry_msgs::PolygonS
 }
 
 void SensorCoveragePlanner3D::JoystickCallback(const sensor_msgs::Joy::ConstPtr& joy_msg){
-  if(pp_.kResetWaypointJoystickButton >= 0 && pp_.kResetWaypointJoystickButton < joy_msg->buttons.size()){
-    if (joy_msg->buttons[pp_.kResetWaypointJoystickButton] == 1){
+   if (pp_.kResetWaypointJoystickAxesID >= 0 && pp_.kResetWaypointJoystickAxesID < joy_msg->axes.size()) {
+    if (reset_waypoint_joystick_axis_value_ > -0.1 && joy_msg->axes[pp_.kResetWaypointJoystickAxesID] < -0.1) {
       reset_waypoint_ = true;
+      // Set waypoint to the current robot position to stop the robot in place
+      geometry_msgs::PointStamped waypoint;
+      waypoint.header.frame_id = "map";
+      waypoint.header.stamp = ros::Time::now();
+      waypoint.point.x = pd_.robot_position_.x;
+      waypoint.point.y = pd_.robot_position_.y;
+      waypoint.point.z = pd_.robot_position_.z;
+      waypoint_pub_.publish(waypoint);
       std::cout << "reset waypoint" << std::endl;
     }
+    reset_waypoint_joystick_axis_value_ = joy_msg->axes[pp_.kResetWaypointJoystickAxesID];
   }
   
 }
 
 void SensorCoveragePlanner3D::ResetWaypointCallback(const std_msgs::Empty::ConstPtr& empty_msg){
   reset_waypoint_ = true;
+  // Set waypoint to the current robot position to stop the robot in place
+  geometry_msgs::PointStamped waypoint;
+  waypoint.header.frame_id = "map";
+  waypoint.header.stamp = ros::Time::now();
+  waypoint.point.x = pd_.robot_position_.x;
+  waypoint.point.y = pd_.robot_position_.y;
+  waypoint.point.z = pd_.robot_position_.z;
+  waypoint_pub_.publish(waypoint);
   std::cout << "reset waypoint" << std::endl;
 }
 
