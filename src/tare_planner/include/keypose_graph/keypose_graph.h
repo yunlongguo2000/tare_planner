@@ -10,6 +10,7 @@
 #include <queue>
 #include <utility>
 #include <vector>
+#include <stack>
 
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/PoseStamped.h>
